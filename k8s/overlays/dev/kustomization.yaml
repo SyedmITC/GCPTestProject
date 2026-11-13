@@ -23,4 +23,4 @@ images:
   newTag: fc626b6
 - name: frontend
   newName: us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab/frontend
-  newTag: fc626b6
+  newTag: 67ee744
