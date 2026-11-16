@@ -16,14 +16,10 @@ configMapGenerator:
   - APP_ENV=dev
   name: app-config
 
-# CI updates newTag on every merge to main (see .github/workflows/_build-push.yml).
 images:
 - name: backend
   newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/backend
-<<<<<<< HEAD
-
   newTag: 67ee744
 - name: frontend
   newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/frontend
   newTag: 67ee744
->>>>>>> 5a71bbc (fix: update project id to gcptestproject-514715)
