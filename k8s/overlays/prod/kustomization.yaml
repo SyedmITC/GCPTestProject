@@ -35,8 +35,8 @@ patches:
 # Only changed through the "promote-to-prod" workflow, which opens a PR.
 images:
   - name: backend
-    newName: us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab/backend
+    newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/backend
     newTag: latest
   - name: frontend
-    newName: us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab/frontend
+    newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/frontend
     newTag: latest

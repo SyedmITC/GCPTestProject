@@ -10,11 +10,11 @@ How this project deploys, where everything runs, how to reach it, and how the pr
 |---|---|
 | GitHub repo (deploys from here) | `nextimadmin/GCPTestProject`, git remote **`itc`** |
 | Old/personal repo | `firdousali86/GCPTestProject`, git remote **`origin`** (no longer deploys) |
-| GCP project | `testgcpproject-508711` (number `539229987082`) |
+| GCP project | `gcptestproject-514715` (number `539229987082`) |
 | Region | `us-central1` |
 | GKE cluster | `gitops-lab-gke` (Autopilot) |
-| Image registry | `us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab` |
-| CI service account | `gitops-lab-github-ci@testgcpproject-508711.iam.gserviceaccount.com` |
+| Image registry | `us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab` |
+| CI service account | `gitops-lab-github-ci@gcptestproject-514715.iam.gserviceaccount.com` |
 | Workload Identity pool / provider | `gitops-lab-gh-pool` / `github` |
 | App (dev) URL | **http://34.136.113.104** |
 | Argo CD UI | via port-forward, see [section 4](#4-argo-cd) |
@@ -178,10 +178,10 @@ Only the repo **owner** can set these (on a personal-account repo, write access 
 ```sh
 R=nextimadmin/GCPTestProject
 gh variable set GCP_REGION          -R $R -b "us-central1"
-gh variable set GCP_PROJECT_ID      -R $R -b "testgcpproject-508711"
+gh variable set GCP_PROJECT_ID      -R $R -b "gcptestproject-514715"
 gh variable set GAR_REPO            -R $R -b "gitops-lab"
 gh variable set WIF_PROVIDER        -R $R -b "projects/539229987082/locations/global/workloadIdentityPools/gitops-lab-gh-pool/providers/github"
-gh variable set WIF_SERVICE_ACCOUNT -R $R -b "gitops-lab-github-ci@testgcpproject-508711.iam.gserviceaccount.com"
+gh variable set WIF_SERVICE_ACCOUNT -R $R -b "gitops-lab-github-ci@gcptestproject-514715.iam.gserviceaccount.com"
 ```
 
 > On `origin`, `WIF_PROVIDER` has a stray `\r\n` at the end. Don't copy it from there.
@@ -198,14 +198,14 @@ gh variable set WIF_SERVICE_ACCOUNT -R $R -b "gitops-lab-github-ci@testgcpprojec
 | 4 | `invalid_target ... pool or provider is disabled or deleted` | `gitops-lab-gh-pool` **and** its provider were deleted on 2026-09-25, and were missing from Terraform state | Undelete both (possible within 30 days of deletion), import them into Terraform, point `github_repo` at the new repo, apply (commands below) |
 | 5 | Terraform import of the provider: `Cannot import non-existent remote object` | The provider was deleted separately, so undeleting the pool didn't bring it back | `gcloud iam workload-identity-pools providers undelete github ...` |
 | 6 | Workflows "deployed" but **nothing on the cluster** | The cluster had been recreated, so Argo CD wasn't installed. The Argo CD manifests also still pointed at `firdousali86` | Switched the `repoURL` in `argocd/**` to `nextimadmin`, pushed, ran `03-install-argocd.sh` |
-| 7 | `kubectl` hung | kubectl context was set to another cluster (`tribetalk-cluster`) | `gcloud container clusters get-credentials gitops-lab-gke --region us-central1 --project testgcpproject-508711` |
+| 7 | `kubectl` hung | kubectl context was set to another cluster (`tribetalk-cluster`) | `gcloud container clusters get-credentials gitops-lab-gke --region us-central1 --project gcptestproject-514715` |
 | 8 | `git add`: `insufficient permission for adding an object`, then `dubious ownership` | Part of `.git` became owned by `root` (git run with `sudo`). The first fix, run from a root shell, made all of `.git` root-owned | `sudo chown -R Mac:staff .git` from a **normal** terminal. Don't use `safe.directory` |
 | 9 | Pods in `ImagePullBackOff` with old tag `51a24f1` | Argo CD read the repo just before the repo-URL change landed, so it deployed the old repo's tags, whose images no longer exist | Hard refresh of `root` and `gitops-lab-dev` (section 4) |
 
 ### Restoring the Workload Identity pool (for fixes 4–5)
 
 ```sh
-P=testgcpproject-508711
+P=gcptestproject-514715
 gcloud iam workload-identity-pools undelete gitops-lab-gh-pool --location=global --project=$P
 gcloud iam workload-identity-pools providers undelete github \
   --workload-identity-pool=gitops-lab-gh-pool --location=global --project=$P
@@ -228,7 +228,7 @@ terraform apply
 
 ```sh
 # --- kubectl context ---
-gcloud container clusters get-credentials gitops-lab-gke --region us-central1 --project testgcpproject-508711
+gcloud container clusters get-credentials gitops-lab-gke --region us-central1 --project gcptestproject-514715
 kubectl config current-context
 
 # --- app status ---
@@ -242,7 +242,7 @@ gh workflow run backend  -R nextimadmin/GCPTestProject
 gh workflow run frontend -R nextimadmin/GCPTestProject
 
 # --- images in the registry ---
-gcloud artifacts docker images list us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab --include-tags
+gcloud artifacts docker images list us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab --include-tags
 
 # --- why is a pod failing? ---
 kubectl -n gitops-lab-dev describe pod <pod-name>
