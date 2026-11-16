@@ -22,5 +22,5 @@ images:
   newName: us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab/backend
   newTag: 67ee744
 - name: frontend
-  newName: us-central1-docker.pkg.dev/testgcpproject-508711/gitops-lab/frontend
-  newTag: 67ee744
+  newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/frontend
+  newTag: d5a51d7
