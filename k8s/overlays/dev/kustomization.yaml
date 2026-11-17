@@ -19,7 +19,7 @@ configMapGenerator:
 images:
 - name: backend
   newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/backend
-  newTag: 67ee744
+  newTag: f678d79
 - name: frontend
   newName: us-central1-docker.pkg.dev/gcptestproject-514715/gitops-lab/frontend
   newTag: ae81dea
